@@ -1,0 +1,120 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+{% block title %}articles list{% endblock %}
+{% block content %}
+{% with totle_likes=article.user_like.count %}
+<div>
+<div class="col-md-9">
+    <header>
+        <h1>{{ article.title }}</h1> 
+        <p>{{ user.username }}
+            <span style="margin-left: 20px">{{ article.updated }}</span>
+            <span style="margin-left: 20px" class="glyphicon glyphicon-thumbs-up">
+                {{ totle_likes }}like{{ totle_likes|pluralize }}
+            </span>
+            <span style="margin-left: 20px">
+                {{ total_views }}view{{ total_views|pluralize }}
+            </span>
+        </p>
+    </header>
+    
+    <link rel="stylesheet" href="{% static 'editor/css/editormd.preview.css' %}" /> 
+    <div id='editormd-view'>
+        <textarea id="append-test" style="display:none;"> 
+            {{ article.body }}
+        </textarea> 
+    </div>
+</div>
+<div class="col-md-3">
+    <p class="text-center"><h3>最受欢迎文章</h3></p>
+    <ol>
+        {% for article_rank in most_viewed %}
+        <li>
+            <a href="{{article_rank.get_absolute_url}}">{{ article_rank.title }}</a>
+        </li>
+        {% endfor %}
+    </ol>
+</div>
+<div class="clearfix visible-md"></div>
+
+</div>
+<div class="col-md-12">
+    <p class="text-center">
+        <a onclick="like_article({{article.id}}, 'like')" href="#">
+            <span class="glyphicon glyphicon-thumbs-up">like</span>
+        </a>
+        <a onclick="like_article({{article.id}}, 'unlike')" href="#">
+            <span style="margin-left: 15px;" class="glyphicon glyphicon-thumbs-down">unlike</span>
+        </a>
+    </p>
+</div>
+<div class="col-md-12">
+    {% if user.is_authenticated %}
+    <form action="{% url 'comments' article.id  article.slug %}" method="post" class="form-horizontal" role="form">{% csrf_token %}
+        <div class="form-group">
+            <label for="inputEmail3" class="col-sm-2 control-label">评论</label>
+            <div class="col-sm-10">
+                {{ comment_form.body }}
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-sm-offset-2 col-sm-10">
+                <p><input type="submit" name="" value=" 发 评 论 " class="btn btn-primary"></p>
+            </div>
+        </div>
+    </form>
+    {% else %}
+    <p>您还没有登录，请您<a href="{% url 'user_login' %}">登录</a></p>
+    {% endif %}
+    <h3><span class="glyphicon glyphicon-bullhorn"></span>评论{{ comments.count }}</h3>
+    {% for comment in comments %}
+    <div>
+        <p><strong>{{ comment.commentator }}</strong>说:
+            <span>{{ comment.created }}</span>
+        </p>
+        <p style="margin-left:40px;">{{ comment.body }}</p>
+    </div>
+    {% empty %}
+    <p>没有评论</p>
+    {% endfor %}
+</div>
+<script src='{% static "js/jquery.js" %}'></script>
+<script src='{% static "editor/lib/marked.min.js" %}'></script>
+<script src='{% static "editor/lib/prettify.min.js" %}'></script> 
+<script src='{% static "editor/lib/raphael.min.js" %}'></script>
+<script src='{% static "editor/lib/underscore.min.js" %}'></script> 
+<script src='{% static "editor/lib/sequence-diagram.min.js" %}'></script> 
+<script src='{% static "editor/lib/flowchart.min.js" %}'></script>
+<script src='{% static "editor/lib/jquery.flowchart.min.js" %}'></script> 
+<script src='{% static "editor/editormd.js" %}'></script>
+<script type="text/javascript" src="{% static 'js/layer.js'%}"></script>
+<script type="text/javascript"> 
+$(function(){
+    editormd.markdownToHTML("editormd-view", {
+        htmlDecode: "style, script, iframe",
+        emoji: true,
+        taskList:true,
+        tex:true,
+        flowChart:true,
+        sequenceDiagram : true,
+    });
+});
+function like_article(id, action){
+    $.ajax({
+        url: "{% url 'like_article' %}",
+        type: "POST",
+        data: {"id":id, "action":action},
+        success: function(data){
+            if(data['result']=="OK"){
+                layer.msg("感谢点赞");
+                window.location.reload();
+            }else{
+                layer.msg("我会继续努力");
+                window.location.reload();
+            }
+        },
+    });
+}
+</script>
+{% endwith %}
+{% endblock %}
