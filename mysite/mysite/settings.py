@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'haystack'
     'blog',
     'account',
     'article1',
@@ -174,3 +175,12 @@ SOCIAL_AUTH_GITHUB_SECRET = 'c72f92c5bc30e9e0d4c6232873bb0109ee476fcc'
 
 SOCIAL_AUTH_LOGIN_REDIRECT_URL = '/article/article_titles/'
 SOCIAL_AUTH_URL_NAMESPACE = 'social'
+
+# haystack
+HAYSTACK_CONNECTIONS = {
+    'default': {
+        'ENGINE': 'haystack.backends.whoosh_backend.WhooshEngine',
+        'PATH': os.path.join(os.path.dirname(__file__), 'whoosh_index'),
+    },
+}
+HAYSTACK_SEARCH_RESULTS_PER_PAGE = 10
