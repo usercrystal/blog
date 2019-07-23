@@ -3,6 +3,7 @@ from django.views.generic import View, ListView, DetailView, TemplateView, FormV
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
+from django.views.decorators.cache import cache_page
 from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib.auth import get_user_model
 from django.utils.decorators import method_decorator
@@ -94,7 +95,6 @@ class ArticlePostView(View):
     user = get_user_model()
 
     @method_decorator(login_required)
-    @method_decorator(csrf_exempt)
     def dispatch(self, *args, **kwargs):
         return super(ArticlePostView, self).dispatch(*args, **kwargs)
 
@@ -121,6 +121,7 @@ class ArticlePostView(View):
             return HttpResponse("3")
 
 
+@method_decorator(cache_page(60 * 5), name='dispatch')
 class ArticleListView(ListView):
     template_name = 'article/column/article_list.html'
     context_object_name = 'articles'
@@ -132,6 +133,7 @@ class ArticleListView(ListView):
         return articles
 
 
+@method_decorator(cache_page(60*5), name='dispatch')
 class ArticleDetailView(DetailView):
     model = ArticlePost1
     template_name = 'article/column/article_detail.html'
@@ -212,6 +214,7 @@ class ReditArticleFormView(FormView):
             return HttpResponse('2')
 
 
+@method_decorator(cache_page(60 * 5), name='dispatch')
 class ArticleTitleListView(ListView):
     template_name = 'article/list/article_titles.html'
     model = ArticlePost1
@@ -260,7 +263,6 @@ class CommentFormView(FormView):
     form_class = CommentForm
 
     @method_decorator(login_required)
-    @method_decorator(csrf_exempt)
     def dispatch(self, *args, **kwargs):
         return super().dispatch(*args, **kwargs)
 

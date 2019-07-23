@@ -5,7 +5,11 @@
     <h1>阅读，丰富头脑，善化行为</h1>
 </div>
 <div class="container">
-    {% for article in articles %} 
+    <form class="form-horizontal" action="{% url 'search' %}" method="get">
+        {% csrf_token %}
+        <div class="form-group">{{ form.as_p }}</div>
+    </form>
+    {% for article in articles %}
     <div class="list-group">
         <a href="{{article.get_absolute_url}}" class="list-group-item active">
             <h4 class="list-group-item-heading">{{article.title}}</h4> 

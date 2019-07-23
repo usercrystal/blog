@@ -5,7 +5,8 @@
 <link rel="stylesheet" href="{% static 'editor/css/editormd.css' %}">
 
 <div style="margin-left:10px">
-    <form class="form-horizontal" action="." method="post">{% csrf_token %} 
+    <form class="form-horizontal" action="." method="post">
+        {% csrf_token %}
         <div class="row" style="margin-top: 10px;">
             <div class="col-md-2 text-right"><span>标题:</span></div>
             <div class="col-md-10 text-left">{{article_post_form.title}}</div> 
@@ -48,7 +49,7 @@ function publish_article(){
     $.ajax({
         url: "{% url 'article_post' %}",
         type: "POST",
-        data: {"title":title, "body":body, "column_id":column_id},
+        data: {"title":title, "body":body, "column_id":column_id, csrfmiddlewaretoken:'{{csrf_token}}'},
         success: function(e){
             if(e=="1"){ 
                 layer.msg("successful");

@@ -50,7 +50,8 @@
 </div>
 <div class="col-md-12">
     {% if user.is_authenticated %}
-    <form action="{% url 'comments' article.id  article.slug %}" method="post" class="form-horizontal" role="form">{% csrf_token %}
+    <form action="{% url 'comments' article.id  article.slug %}" method="post" class="form-horizontal" role="form">
+        {% csrf_token %}
         <div class="form-group">
             <label for="inputEmail3" class="col-sm-2 control-label">评论</label>
             <div class="col-sm-10">
