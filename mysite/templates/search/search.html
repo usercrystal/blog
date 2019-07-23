@@ -1,0 +1,37 @@
+{% extends 'article/base.html' %}
+{% block title %} articles {% endblock %}
+{% block content %}
+    <div class="container">
+    {%  if query %}
+        <h2>搜索：<span style="color: red">{{ query }}</span></h2>
+        {% if query and page.object_list %}
+            {% for article in page.object_list %}
+                <div class="list-group">
+                    <a href="{{article.object.get_absolute_url}}" class="list-group-item active">
+                        <h4 class="list-group-item-heading">{{article.object.title}}</h4>
+                    </a>
+                    <p class="list-group-item-text">作者:
+                        <a href="{% url 'author_articles' article.object.author.username %}">
+                            {{article.object.author.username}}</a></p>
+                    <p class="list-group-item-text">概要:{{article.object.body|slice:'70'| linebreaks}}</p>
+                </div>
+            {% empty %}
+            <p>没有搜索结果</p>
+            {% endfor %}
+            <div class="pagination">
+                <span class="step-links">
+                    {% if page_obj.has_previous %}
+                        <a href="?q={{ query }}&page={{ page_obj.previous_page_number }}">Previous</a>
+                    {% endif %}
+                    {% if page_obj.has_next %}
+                        <a href="?q={{ query }}&page={{ page_obj.next_page_number }}">Next</a>
+                    {% endif %}
+                    <span class="current">
+                        Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+                    </span>
+                </span>
+            </div>
+        {% endif %}
+    {% endif %}
+    <div>
+{% endblock %}

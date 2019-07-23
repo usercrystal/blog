@@ -16,6 +16,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include, re_path
 from django.contrib.auth import views as auth_views
+import haystack
 
 from blog.views import Blog_title
 from account.views import Register
@@ -52,5 +53,6 @@ urlpatterns = [
     path(r'article/(?P<id>\d+)/(?P<slug>[-\w]+/)/comment/$',
          CommentFormView.as_view(), name='comments'),
     # re_path(r'^o/', include('oauth2_provider.urls', namespace='oauth2_provider')),
-    path('', include('social_django.urls', namespace='social'))
+    path('', include('social_django.urls', namespace='social')),
+    path('^search/', include('haystack.urls'), name='search'),
 ]
