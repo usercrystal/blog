@@ -8,7 +8,7 @@ django-cors-middleware==1.4.0
 django-oauth-toolkit==1.2.0
 idna==2.8
 oauthlib==3.0.2
-PyJWT==1.7.1
+PyJWT==2.4.0
 PyMySQL==0.9.3
 python-memcached==1.59
 python3-openid==3.1.0
